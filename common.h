@@ -6,7 +6,7 @@
 #include <pcl/point_types.h>
 
 // we only use XYZI
-typedef pcl::PointXYZI PointT;
+typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 typedef boost::shared_ptr<PointCloudT> PointCloudTPtr;
 typedef PCLVisualizerExtented PCLViewer;

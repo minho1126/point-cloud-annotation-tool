@@ -81,10 +81,10 @@ public:
         {
             if (pcl::isFinite (cloud_->points[cp]))
             {
-                const pcl::RGB& color = MyCloudLUT::at (label[cp] % MyCloudLUT::size ());
-                colors[j    ] = color.r;
-                colors[j + 1] = color.g;
-                colors[j + 2] = color.b;
+                //const pcl::RGB& color = MyCloudLUT::at (label[cp] % MyCloudLUT::size ());
+                colors[j    ] = cloud_->points[cp].r;//scalars->GetComponent(cp,0); //color.r;
+                colors[j + 1] = cloud_->points[cp].g;//scalars->GetComponent(cp,1); //color.g;
+                colors[j + 2] = cloud_->points[cp].b;//scalars->GetComponent(cp,2); //color.b;
                 j += 3;
             }
         }

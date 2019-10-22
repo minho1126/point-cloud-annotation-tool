@@ -2,7 +2,7 @@
 using namespace std;
 using namespace pcl::visualization;
 
-typedef pcl::PointCloud<pcl::PointXYZI> PointCloudT;
+typedef pcl::PointCloud<pcl::PointXYZRGBA> PointCloudT;
 
 bool loadBinFile(string filename_,PointCloudT& cloud_)
 {
@@ -16,9 +16,9 @@ bool loadBinFile(string filename_,PointCloudT& cloud_)
     cloud_.height = 1;
 
     for (int i=0; input.good() && !input.eof(); i++) {
-        pcl::PointXYZI point;
+        pcl::PointXYZRGBA point;
         input.read((char *) &point.x, 3*sizeof(double));
-        input.read((char *) &point.intensity, sizeof(double));
+        input.read((char *) &point.r, 3*sizeof(double));
         cloud_.push_back(point);
     }
     input.close();
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
     }
 
     PCLVisualizer viewer;
-    viewer.addPointCloud<pcl::PointXYZI>(cloud);
+    viewer.addPointCloud<pcl::PointXYZRGBA>(cloud);
     viewer.spin(); //loop
     return 0;
 }

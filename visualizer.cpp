@@ -4,6 +4,7 @@
 #include "pcl/visualization/pcl_visualizer_extented.h"
 
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
@@ -129,6 +130,7 @@ void Visualizer::refresh()
     ui->label_filename->setText(QString::fromStdString(pointcloudFileName));
     colorHandler.setInputCloud(cloud);
     colorHandler.setLabel(cloudLabel);
+    //pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZRGB> rgb(cloud);
     viewer->addPointCloud<PointT>(cloud,colorHandler,"cloud",0);
 
 //    // show cloud
@@ -390,23 +392,24 @@ void Visualizer::planeDetect(){
 
 void Visualizer::openFile()
 {
-    pointcloudFileName = QFileDialog::getOpenFileName(this, tr("Open PCD file"), "/home/fancy", tr("PCD Files (*.pcd *.bin)")).toStdString();
+    pointcloudFileName = QFileDialog::getOpenFileName(this, tr("Open PLY file"), "/", tr("PLY Files (*.ply *.pcd)")).toStdString();
     if (pointcloudFileName.empty()) return;
 
     clear();
     QFileInfo file(QString::fromStdString(pointcloudFileName));
-    QString ext = file.completeSuffix();  // ext = "bin" ,"pcd"
+    QString ext = file.completeSuffix();  // ext = "bin" ,"ply"
 
-    if (ext=="pcd"){
-        pcl::io::loadPCDFile(pointcloudFileName,*cloud);
+    if (ext=="ply"){
+	pcl::io::loadPLYFile(pointcloudFileName, *cloud);
     }else{
-        loadBinFile(pointcloudFileName,*cloud);
+        //loadBinFile(pointcloudFileName,*cloud);
+        pcl::io::loadPCDFile(pointcloudFileName,*cloud);
     }
 
     std::cout<<pointcloudFileName<<"cloud point loaded"<<endl;
     std::cout<<"cloud point number: "<<cloud->width*cloud->height<<endl;
 
-    annotationFileName=pointcloudFileName+".txt";
+    annotationFileName=pointcloudFileName+"_annotation.txt";
     if (QFile::exists(QString::fromStdString(annotationFileName))){
         annoManager->loadAnnotations(annotationFileName);
     }
@@ -437,22 +440,23 @@ void Visualizer::save()
 
 void Visualizer::loadBinFile(string filename_,PointCloudT& cloud_)
 {
-    std::ifstream input(filename_.c_str(), std::ios_base::binary);
-    if(!input.good()){
-        std::cerr<<"Cannot open file : "<<filename_<<std::endl;
-        return;
-    }
+    //std::ifstream input(filename_.c_str(), std::ios_base::binary);
+    //if(!input.good()){
+    //    std::cerr<<"Cannot open file : "<<filename_<<std::endl;
+    //    return;
+    //}
 
-    cloud_.clear();
-    cloud_.height = 1;
+    //cloud_.clear();
+    //cloud_.height = 1;
 
-    for (int i=0; input.good() && !input.eof(); i++) {
-        PointT point;
-        input.read((char *) &point.x, 3*sizeof(double));
-        input.read((char *) &point.intensity, sizeof(double));
-        cloud_.push_back(point);
-    }
-    input.close();
+    //for (int i=0; input.good() && !input.eof(); i++) {
+        //PointT point;
+        //input.read((char *) &point.x, 3*sizeof(double));
+        //input.read((char *) &point.intensity, sizeof(double));
+        //cloud_.push_back(point);
+    //}
+    //input.close();
+    pcl::io::loadPLYFile(filename_, cloud_);
 }
 
 void Visualizer::showAnnotation(const Annotation* anno){
